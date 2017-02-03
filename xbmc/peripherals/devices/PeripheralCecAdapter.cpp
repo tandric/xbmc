@@ -644,7 +644,11 @@ void CPeripheralCecAdapter::OnTvStandby(void)
     g_application.OnAction(CAction(ACTION_PAUSE));
     break;
   case LOCALISED_ID_STOP:
-    g_application.StopPlaying();
+//    g_application.StopPlaying();
+      if (pSlideShow)
+        pSlideShow->OnAction(CAction(ACTION_STOP));
+      else
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
     break;
   default:
     CLog::Log(LOGERROR, "%s - Unexpected [standby_pc_on_tv_standby] setting value", __FUNCTION__);
@@ -768,7 +772,7 @@ void CPeripheralCecAdapter::CecAlert(void *cbParam, const libcec_alert alert, co
 
   if (bReopenConnection)
   {
-    // Reopen the connection asynchronously. Otherwise a deadlock may occur.
+    // Reopen the connection asynchronously. Otherwise a deadlock may occure.
     // Reconnect means destruction and recreation of our libcec instance, but libcec
     // calls this callback function synchronously and must not be destroyed meanwhile.
     adapter->ReopenConnection(true);
